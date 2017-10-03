@@ -10,7 +10,7 @@
 
     <div id="chartArea"></div>
     <script type="text/javascript">
-      var dataset = _.map(_.range(500), i => Math.random() * 100);
+      var dataset = _.map(_.range(50), i => Math.random() * 100);
 
       var w = 400, h = 300;
 
@@ -27,6 +27,11 @@
           .domain([0, d3.max(dataset) * 1.02])
           .range([0, h]);
 
+      var colorScale = d3.scale.linear()  //we've copied the yScale (because we still want a linear ... distribution(?)),
+          .domain([0, d3.max(dataset)])  //but have removed the 1.02 multiplier because we don't need a buffer anymore
+          //.domain([0, dataset.length]) //for when you want the range to move across the number of bars
+          .range(['lightgreen', 'teal']); //then we can add a starting and ending color. Woot.
+
       svg.selectAll('rect')
           .data(dataset)
           .enter()
@@ -36,6 +41,8 @@
           .attr('y', (d) => h - yScale(d))
           .attr('width', xScale.rangeBand())
           .attr('height', (d) => yScale(d))
+          .attr('fill', colorScale) //this is the exact same thing as (d) => colorScale(d). D3 just assumes that much.
+          //.attr('fill', (d, i) => colorScale(i)) //this colors bars based on their position in the array
     </script>
   </body>
 </html>

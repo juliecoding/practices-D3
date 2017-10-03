@@ -2,31 +2,27 @@
   <head>
     <title>D3 - Data Driven Drivel</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.js" charset="utf-8"></script>
-    <style>    
-      body {
-        padding-top: 50px;
-        padding-left: 100px;
-      }
-  
-      .bar {
-        display: inline-block;
-        width: 20px;
-        height: 75px; /* Gets overriden by D3-assigned height below */
-        margin-right: 2px;
-        background-color: teal;
-      }
-    </style>
+    <link rel="stylesheet" type="text/css" href="./styles.css">
   </head>
   <body>
+    <div id="chartArea"></div>
     <script type="text/javascript">
       var dataset = [5, 10, 15, 20, 25];
-      d3.select('body').selectAll('div')
+      var w = 400, h = 300, multiplier = 10;
+      var svg = d3.select('#chartArea').append('svg')
+          .attr('width', 400)
+          .attr('height', 300);
+
+      svg.selectAll('rect')
         .data(dataset)
         .enter()
-        .append('div')
+        .append('rect')
         .attr('class', 'bar')
-        .style('height', function(d) {
-          return d * 7 + 'px';
+        .attr('x', (d, i) => i * 25) //i = index. The second term in a D3 function is usually the element's position or index in the dataset. Woo. 
+        .attr('y', d => 300 - d * multiplier)
+        .attr('width', 20)
+        .attr('height', function(d) {
+          return d * multiplier;
         });
     </script>
   </body>

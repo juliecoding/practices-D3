@@ -9,22 +9,26 @@
     <body>
         <div id="chartArea"></div>
         <script type="text/javascript">
-            var dataset = _.map(_.range(35), i => Math.random() * 100);
+            var dataset = _.map(_.range(35), i => Math.random() * 35);
 
-            var w = 400, h = 300;
+            var margin = {top: 15, right: 15, bottom: 35, left: 50};
+            var w = 400 - margin.left - margin.right,
+                h = 300 - margin.top - margin.bottom;
 
             var svg = d3.select('#chartArea').append('svg')
-                .attr('width', w)
-                .attr('height', h)
+                .attr('width', w + margin.left + margin.right)
+                .attr('height', h + margin.top + margin.bottom)
                 .style('border', '2px dashed black')
+                .append('g')
+                .attr('transform', `translate(${margin.left}, ${margin.top})`)
 
             var xScale = d3.scale.ordinal()
                 .domain(dataset)
-                .rangeBands([0, w], 0.2, 0.5); //second argument is the padding between each band (bar); it can feasibly range from 0 (none) to 1 (too much). A measurement of .5 means that the padding between bands is the same width as the bands themselves.  Third argument is padding at the beginning and end of the set of bands (beginning and end of 'x scale' of graph).
+                .rangeBands([0, w], 0.2, /*.5*/); //second argument is the padding between each band (bar); it can feasibly range from 0 (none) to 1 (too much). A measurement of .5 means that the padding between bands is the same width as the bands themselves. Third argument is padding at the beginning and end of the set of bands (beginning and end of 'x scale' of graph). So it gives a little space between where your "chart" begins and where the bars will actually start showing up.
 
             var yScale = d3.scale.linear()
-                .domain([0, d3.max(dataset) * 1.1])
-                .range([0, h]);
+                .domain([0, d3.max(dataset)] /* * 1.1*/) //Setting this to slightly more than the dataset (by using the 1.1 multiplier) gives us a little bit of space between the highest bar and the top of the "chart".
+                .range([h, 0])
 
             // var colorScale = d3.scale.linear()  //we've copied the yScale (because we still want a linear ... distribution(?)),
             //     .domain([0, d3.max(dataset)])  //but have removed the 1.02 multiplier because we don't need a buffer anymore

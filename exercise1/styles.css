@@ -20,3 +20,9 @@ body {
   display: inline-block;
   margin-right: 2px;
 }
+
+.bubble {
+  display: inline-block;
+  stroke: grey;
+  stroke-width: .5px;
+}

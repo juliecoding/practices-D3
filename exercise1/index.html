@@ -1,48 +1,55 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>D3 - Data Driven Drivel</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
-    <link rel="stylesheet" type="text/css" href="./styles.css">
-  </head>
-  <body>
+    <head>
+        <title>D3 - Data Driven Drivel</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+        <link rel="stylesheet" type="text/css" href="./styles.css">
+    </head>
+    <body>
+        <div id="chartArea"></div>
+        <script type="text/javascript">
+            var dataset = _.map(_.range(35), i => Math.random() * 100);
 
-    <div id="chartArea"></div>
-    <script type="text/javascript">
-      var dataset = _.map(_.range(50), i => Math.random() * 100);
+            var w = 400, h = 300;
 
-      var w = 400, h = 300;
+            var svg = d3.select('#chartArea').append('svg')
+                .attr('width', w)
+                .attr('height', h)
+                .style('border', '2px dashed black')
 
-      var svg = d3.select('#chartArea').append('svg')
-          .attr('width', w)
-          .attr('height', h)
-          .style('border', '2px dashed black')
+            var xScale = d3.scale.ordinal()
+                .domain(dataset)
+                .rangeBands([0, w], 0.2, 0.5); //second argument is the padding between each band (bar); it can feasibly range from 0 (none) to 1 (too much). A measurement of .5 means that the padding between bands is the same width as the bands themselves.  Third argument is padding at the beginning and end of the set of bands (beginning and end of 'x scale' of graph).
 
-      var xScale = d3.scale.ordinal()
-          .domain(dataset)
-          .rangeBands([0, w], 0.2, 0.5); //second argument is the padding between each band (bar); it can feasibly range from 0 (none) to 1 (too much). A measurement of .5 means that the padding between bands is the same width as the bands themselves.  Third argument is padding at the beginning and end of the set of bands (beginning and end of 'x scale' of graph).
+            var yScale = d3.scale.linear()
+                .domain([0, d3.max(dataset) * 1.1])
+                .range([0, h]);
 
-      var yScale = d3.scale.linear()
-          .domain([0, d3.max(dataset) * 1.02])
-          .range([0, h]);
+            // var colorScale = d3.scale.linear()  //we've copied the yScale (because we still want a linear ... distribution(?)),
+            //     .domain([0, d3.max(dataset)])  //but have removed the 1.02 multiplier because we don't need a buffer anymore
+            //     //.domain([0, dataset.length]) //for when you want the range to move across the number of bars
+            //     .range(['lightgreen', 'teal']); //then we can add a starting and ending color. Woot.
 
-      var colorScale = d3.scale.linear()  //we've copied the yScale (because we still want a linear ... distribution(?)),
-          .domain([0, d3.max(dataset)])  //but have removed the 1.02 multiplier because we don't need a buffer anymore
-          //.domain([0, dataset.length]) //for when you want the range to move across the number of bars
-          .range(['lightgreen', 'teal']); //then we can add a starting and ending color. Woot.
+            // var colorScale = d3.scale.quantile()  //divides the amount of data into chunks, but I honestly am pretty confused about how when I use anything besides a single number in the domain,
+            //     .domain([22]) //22 of the bars of the chart will be the first color listed
+            //     .range(['lightgreen', 'teal', 'purple']); //the rest of the bars will be the last color listed.
 
-      svg.selectAll('rect')
-          .data(dataset)
-          .enter()
-          .append('rect')
-          .attr('class', 'bar')
-          .attr('x', (d) => xScale(d))
-          .attr('y', (d) => h - yScale(d))
-          .attr('width', xScale.rangeBand())
-          .attr('height', (d) => yScale(d))
-          .attr('fill', colorScale) //this is the exact same thing as (d) => colorScale(d). D3 just assumes that much.
-          //.attr('fill', (d, i) => colorScale(i)) //this colors bars based on their position in the array
-    </script>
-  </body>
+            var colorScale = d3.scale.quantize()  //divides the amount of data into evenly-sized "buckets",
+                .domain([0, dataset.length])
+                .range(['lightgreen', 'chartreuse', 'teal', 'purple']); //this, for example creates four even color "chunks".
+
+            svg.selectAll('rect')
+                .data(dataset)
+                .enter()
+                .append('rect')
+                .attr('class', 'bar')
+                .attr('x', (d) => xScale(d))
+                .attr('y', (d) => h - yScale(d))
+                .attr('width', xScale.rangeBand())
+                .attr('height', (d) => yScale(d))
+                // .attr('fill', colorScale) //this is the exact same thing as (d) => colorScale(d). D3 just assumes that much.
+                .attr('fill', (d, i) => colorScale(i)) //this colors bars based on their position in the array
+        </script>
+    </body>
 </html>

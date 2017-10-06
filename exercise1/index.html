@@ -8,7 +8,35 @@
     </head>
     <body>
         <div id="chartArea"></div>
+        <button onclick="update()">Update</button>
         <script type="text/javascript">
+            function update() {
+                _.each(dataset, function(datum) {
+                    datum.x = Math.random() * 100;
+                    datum.y = Math.random() * 100;
+                    datum.r = Math.random() * 30
+                })
+                svg.selectAll('circle')
+                    /*Transition of x*/
+                    .transition()
+                    .duration(800)
+                    // .delay(function(d, i) {
+                    //     return i * 5;
+                    // })
+                    .attr('cx', d => xScale(d.x))
+                    .style('fill', 'yellow')
+                    /*Transition of y*/
+                    .transition()
+                    .duration(800)
+                    .attr('cy', d => yScale(d.y))
+                    .style('fill', 'green')
+                    /*Transition of r*/
+                    .transition()
+                    .duration(800)
+                    .attr('r', d => d.r)
+                    .style('fill', 'lightblue')
+            }
+
             var dataset = _.map(_.range(35), i => {
                 return {
                     x: Math.random() * 100,

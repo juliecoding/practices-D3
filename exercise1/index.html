@@ -10,13 +10,9 @@
         <div id="chartArea"></div>
         <button onclick="update()">Update</button>
         <script type="text/javascript">
-            function update() {
-                _.each(dataset, function(datum) {
-                    datum.x = Math.random() * 100;
-                    datum.y = Math.random() * 100;
-                    datum.r = Math.random() * 30
-                })
-                svg.selectAll('circle')
+
+            function steppedTransition(selection) {
+                selection
                     /*Transition of x*/
                     .transition()
                     .duration(800)
@@ -35,6 +31,34 @@
                     .duration(800)
                     .attr('r', d => d.r)
                     .style('fill', 'lightblue')
+            }
+
+            function plainTransition(selection, dur) {
+                selection
+                    .transition()
+                    .duration(dur)
+                    .attr('cx', d => xScale(d.x))
+                    .attr('cy', d => yScale(d.y))
+                    .attr('r', d => d.r)
+                    .style('fill', 'orange')
+            }
+
+            function newData(datum) {
+                datum.x = Math.random() * 100;
+                datum.y = Math.random() * 100;
+                datum.r = Math.random() * 30
+            }
+
+            function update() {
+                svg.selectAll('circle')
+                    .filter(d => d.x < 50) // This means that this update and transition will only happen to circles whose x value is less than 50 
+                    .each(newData) // This is what resets the x, y, and r values for these circles
+                    .call(plainTransition, 2500) // Calls this particular animation function; I think that the selection (the 'this') is assumed to be the thing this is getting called on, so SVG.
+
+                svg.selectAll('circle')
+                    .filter(d => d.x >= 50)
+                    .each(newData)
+                    .call(steppedTransition)
             }
 
             var dataset = _.map(_.range(35), i => {

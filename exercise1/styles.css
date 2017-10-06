@@ -21,8 +21,21 @@ body {
   margin-right: 2px;
 }
 
-.bubble {
-  display: inline-block;
-  stroke: grey;
-  stroke-width: .5px;
+.dot {
+  fill: teal;
+  fill-opacity: 0.5;
+  stroke-width: 3px;
+}
+
+.active {
+  fill: #03C5C5;
+  fill-opacity: 0.5;
+  stroke-width: 3px;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: lightgrey;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
 }

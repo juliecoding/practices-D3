@@ -32,22 +32,58 @@
 
             var xScale = d3.scale.linear()
                 .domain([0, 100])
-                .range([w, 0]);
+                .range([0, w])
+
+            var xAxis = d3.svg.axis()
+                .scale(xScale)
+                .orient('bottom')
+                .ticks(4)
+                .innerTickSize(4)
+                .outerTickSize(9)
+                .tickPadding(9);
+
+            svg.append('g')
+                .attr('class', 'x axis')
+                .attr('transform', `translate(0, ${h})`)
+                .call(xAxis)
 
             var yScale = d3.scale.linear()
-                .domain([0, d3.max(dataset, d => d.y)] /* * 1.1*/) //Setting this to slightly more than the dataset (by using the 1.1 multiplier) gives us a little bit of space between the highest bar and the top of the "chart".
+                .domain([0, 100])
                 .range([h, 0])
+
+            var yAxis = d3.svg.axis()
+                .scale(yScale)
+                .orient('left')
+                .ticks(12)
+                .innerTickSize(2)
+                .outerTickSize(6)
+                .tickPadding(4)
+
+            svg.append('g')
+                .attr('class', 'y axis')
+                .call(yAxis)
 
             svg.selectAll('circle')
                 .data(dataset)
                 .enter()
                 .append('circle')
-                .attr('class', 'bubble')
+                .attr('class', 'dot')
                 .attr('cx', d => xScale(d.x))
                 .attr('cy', d => yScale(d.y))
                 .attr('r', d => d.r)
-                .attr('fill', `rgb(${colorGenerator()}, ${colorGenerator()}, ${colorGenerator()})`)
-                .attr('fill-opacity', 0.4)
+                // .on('mouseover', d => d3.select(this).classed('active', true))
+                .on('mouseover', function() {
+                    d3.select(this).classed('active', true)
+                })
+                .on('mouseout', function(d) {
+                    d3.select(this).classed('active', false);
+                })
+                .on('mousedown', function(d) {
+                    d3.select(this).attr('r', d.r * 1.25)
+                })
+                .on('mouseup', function(d) {
+                    d3.select(this).attr('r', d.r)
+                });
         </script>
     </body>
 </html>

@@ -1,0 +1,12 @@
+#chart {
+  display: flex;
+  background-color: lightgreen;
+}
+
+svg {
+  background-color: lightblue;
+}
+
+.options {
+  padding-bottom: 1em;
+}

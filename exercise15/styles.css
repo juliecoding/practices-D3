@@ -1,0 +1,13 @@
+path {
+  fill: hotpink; /* Use fill: none if you want a line chart, not an area chart. */
+  stroke: hotpink;
+  fill-opacity: 0.3;
+  stroke-width: 3px;
+}
+
+#chart {
+  width: 600px;
+  height: 400px;
+  border: 1px dashed black;
+  margin-top: 10px;
+}
